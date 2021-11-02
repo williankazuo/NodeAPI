@@ -1,18 +1,27 @@
-import express from 'express';
-import { userRoutes } from './routes/user-routes';
+import express, { Express } from 'express'
+import { UserController } from './controller/user.controller'
+import { connect } from './factories/db'
 
+import { UserMySQLRepository } from './repositories/user/user-mysql.repository'
+import { userRoutes } from './routes/user.routes'
+import { UserService } from './usecases/user/user.service'
 
-const app = express();
-const router = express.Router();
+const setupApp = async (): Promise<Express> => {
+  const app = express()
+  const router = express.Router()
 
-app.use(express.json());
+  const db = await connect()
 
-app.use('/', router)
+  app.use(express.json())
+  app.use(router)
+  app.get('/healthcheck', (req: express.Request, res: express.Response) => res.sendStatus(200))
 
-app.get('/healthcheck', (req: express.Request, res: express.Response) => res.sendStatus(200));
+  const userRepository = new UserMySQLRepository(db)
+  const userService = new UserService(userRepository)
+  const userController = new UserController(userService)
+  userRoutes(router, userController)
 
-userRoutes(router);
+  return app
+}
 
-app.listen(3000, async () => {
-    console.log('App running on port 3000');
-});
+export { setupApp }
