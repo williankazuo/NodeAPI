@@ -1,20 +1,17 @@
-import { uuid } from 'uuidv4'
 import bcrypt from 'bcrypt'
 
 export class User {
-    readonly id: string;
+    readonly id?: string;
     name: string;
     email: string;
     password: string;
-    createdAt: Date;
+    createdAt?: Date;
     updatedAt?: Date;
 
-    constructor (id: string, name: string, email: string, password: string) {
-      this.id = id || uuid()
-      this.name = name
-      this.email = email
-      this.password = this.generatePassword(password)
-      this.createdAt = new Date()
+    constructor (props: Omit<User, 'id' | 'updatedAt'>) {
+      this.name = props.name
+      this.email = props.email
+      this.password = this.generatePassword(props.password)
     }
 
     private generatePassword (password: string): string {

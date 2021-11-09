@@ -1,5 +1,7 @@
 import { User } from '../../entities/User'
 
 export interface IUserRepository {
-    getUsers(limit: number, offset: number): Promise<User[]>
+    list(limit: number, offset: number): Promise<User[]>
+    find(id: string): Promise<User>
+    save(user: User): Promise<string>
 }

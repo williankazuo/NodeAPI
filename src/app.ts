@@ -1,6 +1,6 @@
 import express, { Express } from 'express'
 import { UserController } from './controller/user.controller'
-import { connect } from './factories/db'
+import prismaClient from './factories/prisma'
 
 import { UserMySQLRepository } from './repositories/user/user-mysql.repository'
 import { userRoutes } from './routes/user.routes'
@@ -10,7 +10,7 @@ const setupApp = async (): Promise<Express> => {
   const app = express()
   const router = express.Router()
 
-  const db = await connect()
+  const db = prismaClient
 
   app.use(express.json())
   app.use(router)
